@@ -1,3 +1,9 @@
+### Preface
+
+Real quick, before we jump into the things made by the great [fieryhenry](https://github.com/fieryhenry) (thanks for this great program!), I'd like to explain my part in this.
+
+I'm purely just here to rewrite the C# code into Python, and once I'm done with that, I'll make a GUI. My name's [MCMi460](https://github.com/MCMi460), and thank you for checking me out.
+
 # Battle Cats Save File Editor
 
 I have a discord server:https://discord.gg/DvmMgvn5ZB, it's the best way report bugs and you can leave your suggestions for new features to be implemented in the editor<br>
@@ -11,9 +17,9 @@ Beeven and csehydrogen's open source code, which helped me figure out how to pat
 # How to use
 ## Warning: <b>Before editing anything, please make sure to create a backup of the save file somewhere, in case things go wrong</b>
 
-This got way more complicated due to added security to the transfer system, you now need to have a rooted device - either emulator or real and extract the save that way. 
+This got way more complicated due to added security to the transfer system, you now need to have a rooted device - either emulator or real and extract the save that way.
 
-Download the tool https://github.com/fieryhenry/Battle-Cats-Save-File-Editor/releases (get Battle Cats Save File Editor.zip, not the exe)
+Download the tool https://github.com/MCMi460/Battle-Cats-Save-File-Editor/releases (get Battle Cats Save File Editor.zip, not the exe)
 
 I have created an updated tutorial video that goes you through the steps of getting the save from the game, editing it, putting it back in, and fixing save data is used elsewhere bug: https://youtu.be/D6hPnJTlq-U
 
