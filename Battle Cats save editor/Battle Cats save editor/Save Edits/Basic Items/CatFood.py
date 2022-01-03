@@ -1,12 +1,34 @@
-answer = input("Warning, editing cat food at all can get you banned after a few days, would you like to continue? (yes/no):")
-if answer.lower() == "no":
-    return
-stream = io.open(path, mode='rb')
+def catFood(path):
+    answer = input("Warning, editing cat food at all can get you banned after a few days, would you like to continue? (yes/no):")
+    if answer.lower() == "no":
+        return
+    stream = io.open(path, mode='rb')
 
-catfoodB = []
-Position = 7
-allData = stream.read()
-stream.close()
+    catfoodB = []
+    Position = 7
+    allData = stream.read()
+    stream.close()
 
-catfoodB.append(allData[Position])
-print(f'{int(catfoodB)} ketfud')
+    for i in range(4):
+        catfoodB.append(allData[Position + i])
+    CatFood = int.from_bytes(catfoodB, "little")
+    print(f'You have {CatFood} cat food')
+
+    print("How much cat food do you want?(max 45000, but I recommend below 20k, to be safe")
+
+    CatFood = int(input())
+    if CatFood > 45000:
+        CatFood = 45000
+    elif CatFood < 0:
+        CatFood = 0
+
+    bytes = (CatFood).to_bytes(2, "little")
+    allData = bytearray(allData)
+    Position = 7
+    for i in range(2):
+        allData[Position + i] = bytes[i]
+
+    stream = io.open(path, mode='wb')
+    stream.write(bytes)
+    stream.close()
+    print(f"Set Cat food to {CatFood}")

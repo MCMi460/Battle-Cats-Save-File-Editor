@@ -1,12 +1,19 @@
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-import os, os.path, sys, requests, io
+import os, os.path, sys, requests, io, hashlib
 from datetime import datetime
 # Game Mods
 
 # Save Edits
-
+l = locals()
+with open("Save Edits/Basic Items/CatFood.py","r") as file:
+    exec(file.read(), globals(), l)
+    catFood = l['catFood']
+# Patch file
+with open("Save Edits/Other/Patch Save File.py","r") as file:
+    exec(file.read(), globals(), l)
+    patchSaveFile = l['patchSaveFile']
 
 catAmount = 0
 Savepaths = []
@@ -43,8 +50,8 @@ def SelSave():
     if dlg.exec_() == QDialog.Accepted:
         fileToOpen = dlg.selectedFiles()
         for i in range(len(fileToOpen)):
-            print(f"{Color['Green']}Save: \"{os.path.basename(fileToOpen[i])}\"")
-        print(Color['White'])
+            print(f"{Color['White']}Save: {Color['Green']}\"{os.path.basename(fileToOpen[i])}\"")
+        print(Color['White'],end='')
         Savepaths = fileToOpen
     else:
         print("Please select your save\n")
@@ -61,7 +68,7 @@ def MakeRequest(url):
 def GetCatNumber(path:str):
     # If the save file is not a save file, don't modify/read it as one
     if path.endswith(".list") or path.endswith(".pack") or path.endswith(".so") or path.endswith(".csv"):
-        raise Exception(0)
+        raise Exception("Not a save file")
     stream = io.open(path, mode='rb')
 
     allData = stream.read()
@@ -135,8 +142,8 @@ def GetCurrentCats(path:str):
 def Options():
     fileToOpen = Savepaths
     path = fileToOpen[0]
-    print(f"{Color['Red']}Backup your save before using this editor!\nIf you get an error along the lines of \"Your save is active somewhere else\"then select option 20-->2, and select a save that doesn't have that error and never has had the error")
-    print(f"{Color['Green']}Thanks to: Lethal's editor for being a tool for me to use when figuring out how to patch save files, uploading the save data onto the servers how to and edit cf/xp\nAnd thanks to beeven and csehydrogen's open source work, which I used to implement the save patching algorithm")
+    print(f"{Color['Red']}Backup your save before using this editor!\nIf you get an error along the lines of \"Your save is active somewhere else\"then select option 20-->2, and select a save that doesn't have that error and never has had the error\n")
+    print(f"{Color['Green']}Thanks to: Lethal's editor for being a tool for me to use when figuring out how to patch save files, uploading the save data onto the servers how to and edit cf/xp\nAnd thanks to beeven and csehydrogen's open source work, which I used to implement the save patching algorithm\n")
 
     Features = [
         "Select a new save", "Cat Food", "XP", "Tickets / Platinum Shards", "Leadership", "NP", "Treasures", "Battle Items", "Catseyes", "Cat Fruits / Seeds", "Talent Orbs", "Gamatoto", "Ototo", "Gacha Seed", "Equip Slots", "Gain / Remove Cats", "Cat / Stat Upgrades", "Cat Evolves", "Cat Talents",
@@ -144,24 +151,29 @@ def Options():
     ]
     print(f"{Color['Red']}Warning: if you are using a non en save, many features won't work, or they might corrupt your save data, so make sure you back up your saves!")
 
-    toOutput = "What would you like to do?\n"
-    for i in range(len(Features)):
-        toOutput = toOutput + f"{i}. {Features[i]}" + "\n"
-    print(f"{Color['Yellow']}{toOutput}{Color['White']}")
+    toOutput = f"{Color['White']}What would you like to do?\n{Color['Yellow']}0. {Color['White']}Select a new save\n"
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"{Color['White']}{i}. {Color['Yellow']}{Features[i]}" + "\n"
+    print(f"{toOutput}{Color['White']}")
 
     CatNumber = []
     CatNumber.append(GetCatNumber(path))
     CatNumber.append(0x02)
     catAmount = int(CatNumber[0])
-    Choice = int(input())
+    Choice = ""
+    while Choice == "":
+        Choice = input()
+    Choice = int(Choice)
 
     for i in range(len(fileToOpen)):
         path = fileToOpen[i]
 
-        if Choice == 1:
+        if Choice == 0:
             SelSave()
             Options()
             return
+        elif Choice == 1:
+            catFood(path)
         elif Choice == 2:
             pass
         elif Choice == 3:
@@ -208,7 +220,7 @@ def Options():
             pass
         else:
             print("Please input a number that is recognised")
-        # Patch file here
+        patchSaveFile(gameVer, path)
     input("Press enter to continue\n")
     Options()
 
