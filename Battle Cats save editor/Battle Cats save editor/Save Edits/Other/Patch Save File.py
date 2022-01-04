@@ -6,18 +6,25 @@ def patchSaveFile(choice:str,path:str):
     allData = stream.read()
     stream.close()
 
-    toBeUsed = []
+    toBeUsed = bytearray()
+    stream = io.open(path, mode='rb')
     for i in range(len(allData) - 32):
-        toBeUsed.append(allData[i])
+        toBeUsed.extend(stream.read(1))
+    stream.close()
     bytes = "battlecats".encode(encoding='ASCII')
     if choice != "jp":
         bytes = ("battlecats" + choice).encode(encoding='ASCII')
     test = 32 - len(bytes)
 
-    Usable = bytes + bytearray(toBeUsed)
+    Usable = bytearray()
+    Usable[:] = bytes
+    Usable[:] = toBeUsed
 
 
-    Data = hashlib.md5(Usable).digest()
+    md5 = hashlib.md5()
+
+    md5.update(Usable)
+    Data = md5.hexdigest()
 
     hex = str(Data)
     print("Data patched")
@@ -28,10 +35,10 @@ def patchSaveFile(choice:str,path:str):
 
     stuffs = hex.encode(encoding='ASCII')
 
-    allData = bytearray(allData)
-    allData = allData[:len(allData) - 32]
-    allData.extend(stuffs)
-    stream = io.open(path, mode='wb')
-    stream.write(allData)
+    stream = io.open(path, mode='r+b')
+    stream.seek(len(allData) - 32 + len(stuffs))
+    stuffs = stuffs + stream.read()
+    stream.seek(len(allData) - 32)
+    stream.write(stuffs)
     stream.close()
     return choice
