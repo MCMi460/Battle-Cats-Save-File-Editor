@@ -1,44 +1,21 @@
+# HUGE THANKS TO !j0 (https://github.com/j0912345) for helping me extraordinarily with patching the save file!
 def patchSaveFile(choice:str,path:str):
     if path.endswith(".list") or path.endswith(".pack") or path.endswith(".so") or path.endswith(".csv"):
         raise Exception("Not a save file")
 
-    stream = io.open(path, mode='rb')
-    allData = stream.read()
-    stream.close()
-
-    toBeUsed = bytearray()
-    stream = io.open(path, mode='rb')
-    for i in range(len(allData) - 32):
-        toBeUsed.extend(stream.read(1))
-    stream.close()
-    bytes = "battlecats".encode(encoding='ASCII')
+    location_bytes = bytes("battlecats", "ascii")
     if choice != "jp":
-        bytes = ("battlecats" + choice).encode(encoding='ASCII')
-    test = 32 - len(bytes)
-
-    Usable = bytearray()
-    Usable[:] = bytes
-    Usable[:] = toBeUsed
-
-
-    md5 = hashlib.md5()
-
-    md5.update(Usable)
-    Data = md5.digest()
-
-    hex = str(Data)
-    print("Data patched")
-
-    EncyptedHex = str(Data)
-
-    hex = hex.lower()
-
-    stuffs = hex.encode(encoding='ASCII')
+        location_bytes = bytes("battlecats"+choice, "ascii")
+    checksum_length = 32
 
     stream = io.open(path, mode='r+b')
-    stream.seek(len(allData) - 32 + len(stuffs))
-    stuffs = stuffs + stream.read()
-    stream.seek(len(allData) - 32)
-    stream.write(stuffs)
+    file_data_len = os.path.getsize(path) - checksum_length
+    file_len = file_data_len + 32
+    user_save_data_without_checksum = stream.read(file_data_len)
+    #test = checksum_length - len(location_bytes)
+    data_to_get_checksum_of = (location_bytes + user_save_data_without_checksum)
+    save_hash = hashlib.md5(data_to_get_checksum_of).hexdigest()
+
+    stream.seek(file_data_len)
+    stream.write(bytes(save_hash, "ascii"))
     stream.close()
-    return choice

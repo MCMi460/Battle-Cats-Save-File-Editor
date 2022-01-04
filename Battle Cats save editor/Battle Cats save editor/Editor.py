@@ -3,10 +3,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import os, os.path, sys, requests, io, hashlib
 from datetime import datetime
+l = locals()
 # Game Mods
 
 # Save Edits
-l = locals()
 with open("Save Edits/Basic Items/CatFood.py","r") as file:
     exec(file.read(), globals(), l)
     catFood = l['catFood']

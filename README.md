@@ -4,6 +4,8 @@ Real quick, before we jump into the things made by the great [fieryhenry](https:
 
 I'm purely just here to rewrite the C# code into Python, and once I'm done with that, I'll make a GUI. My name's [MCMi460](https://github.com/MCMi460), and thank you for checking me out.
 
+Also, a HUGE thank you to [!j0](https://github.com/j0912345) for helping me out with patching the save file!
+
 # Battle Cats Save File Editor
 
 I have a discord server:https://discord.gg/DvmMgvn5ZB, it's the best way report bugs and you can leave your suggestions for new features to be implemented in the editor<br>
