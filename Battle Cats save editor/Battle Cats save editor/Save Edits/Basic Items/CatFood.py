@@ -19,10 +19,10 @@ def catFood(path):
     elif CatFood < 0:
         CatFood = 0
 
-    bytes = (CatFood).to_bytes(4, "little")
+    cf_bytes = (CatFood).to_bytes(4, "little")
 
     stream = io.open(path, mode='r+b')
     stream.seek(7)
-    stream.write(bytes)
+    stream.write(cf_bytes)
     stream.close()
     print(f"Set Cat food to {CatFood}")

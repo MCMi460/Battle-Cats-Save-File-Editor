@@ -10,7 +10,13 @@ l = locals()
 with open("Save Edits/Basic Items/CatFood.py","r") as file:
     exec(file.read(), globals(), l)
     catFood = l['catFood']
+with open("Save Edits/Basic Items/XP.py","r") as file:
+    exec(file.read(), globals(), l)
+    xp = l['xp']
 # Patch file
+with open("Save Edits/Other/New Inquiry Code.py","r") as file:
+    exec(file.read(), globals(), l)
+    NewIQ = l['NewIQ']
 with open("Save Edits/Other/Patch Save File.py","r") as file:
     exec(file.read(), globals(), l)
     patchSaveFile = l['patchSaveFile']
@@ -65,6 +71,9 @@ def MakeRequest(url):
     }
     return requests.get(url, headers=headers)
 
+def Error(text:str = "Error, a position couldn't be found, please report this in #bug-reports on discord"):
+    raise Exception(text)
+
 def GetCatNumber(path:str):
     # If the save file is not a save file, don't modify/read it as one
     if path.endswith(".list") or path.endswith(".pack") or path.endswith(".so") or path.endswith(".csv"):
@@ -98,22 +107,22 @@ def UpgradeCats(path:str, catIDs:list, plusLevels:list, baseLevels:list, ignore:
     occurrence = OccurrenceB(path)
     stream = io.open(path, mode='rb')
 
-    bytes = stream.read()
+    x_bytes = stream.read()
     Position = 0
     pos = occurrence[1] + 1
 
     for i in range(len(catIDs)):
         Position = pos + (catIDs[i] * 4) + 3
         if ignore != 2:
-            bytes[Position] = bytes(plusLevels[i])
+            x_bytes[Position] = bytes(plusLevels[i])
             Position -= 1
         Position += 2
         if ignore != 1:
-            bytes[Position] = bytes(baseLevels[i])
+            x_bytes[Position] = bytes(baseLevels[i])
 
     stream.close()
     stream = io.open(path, mode='wb')
-    stream.write(bytes)
+    stream.write(x_bytes)
     stream.close()
 
 def LoadData(path:str):
@@ -175,7 +184,7 @@ def Options():
         elif Choice == 1:
             catFood(path)
         elif Choice == 2:
-            pass
+            xp(path)
         elif Choice == 3:
             pass
         elif Choice == 4:
@@ -211,7 +220,7 @@ def Options():
         elif Choice == 19:
             pass
         elif Choice == 20:
-            pass
+            NewIQ(path)
         elif Choice == 21:
             pass
         elif Choice == 22:
