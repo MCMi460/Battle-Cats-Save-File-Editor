@@ -4,13 +4,10 @@ def catFood(path):
         return
     stream = io.open(path, mode='rb')
 
-    catfoodB = []
-    Position = 7
-    allData = stream.read()
+    stream.seek(7)
+    catfoodB = stream.read(4)
     stream.close()
 
-    for i in range(4):
-        catfoodB.append(allData[Position + i])
     CatFood = int.from_bytes(catfoodB, "little")
     print(f'You have {CatFood} cat food')
 
@@ -23,12 +20,11 @@ def catFood(path):
         CatFood = 0
 
     bytes = (CatFood).to_bytes(2, "little")
-    allData = bytearray(allData)
-    Position = 7
-    for i in range(2):
-        allData[Position + i] = bytes[i]
 
-    stream = io.open(path, mode='wb')
-    stream.write(bytes)
+    stream = io.open(path, mode='r+b')
+    stream.seek(7 + 2)
+    allData = bytes + stream.read()
+    stream.seek(7)
+    stream.write(allData)
     stream.close()
     print(f"Set Cat food to {CatFood}")
