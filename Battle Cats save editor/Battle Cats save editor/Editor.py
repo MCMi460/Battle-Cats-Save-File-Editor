@@ -42,6 +42,9 @@ with open("Save Edits/Level/Stories of Legend.py","r") as file:
 with open("Save Edits/Other/Close Bundle.py","r") as file:
     exec(file.read(), globals(), l)
     Bundle = l['Bundle']
+with open("Save Edits/Other/Fix Elsewhere.py","r") as file:
+    exec(file.read(), globals(), l)
+    Elsewhere = l['Elsewhere']
 with open("Save Edits/Other/New Inquiry Code.py","r") as file:
     exec(file.read(), globals(), l)
     NewIQ = l['NewIQ']
@@ -378,6 +381,62 @@ def OccurrenceB(path:str):
 
     return occurrence
 
+def Search(path:str, conditions, negative:bool = False, startpoint:int = 0, mult = None, endpoint:int = -1):
+    with io.open(path, mode='r+b') as stream:
+        allData = stream.read()
+
+        if not mult:
+            mult = bytearray()
+        if endpoint == -1:
+            endpoint = len(allData) - len(conditions)
+        count = 0
+        pos = 0
+        startpos = startpoint
+        num = 1
+        values = [ None for x in range(50) ]
+        iter = 0
+        start = 0
+        end = len(conditions)
+        if negative:
+            num = -1
+            end = 0
+            start = len(conditions) - 1
+        i = startpos
+        while i < endpoint:
+            count = 0
+            for j in range(len(conditions)):
+                if negative:
+                    try:
+                        if allData[i - j] == conditions[len(conditions) - 1 - j] or mult[len(conditions) - 1 - j] == 0x01:
+                            count += 1
+                            pos = i
+                        else:
+                            count = 0
+                    except:
+                        if values[0] > 0:
+                            i = len(allData)
+                            break
+                else:
+                    try:
+                        if allData[i + j] == conditions[j] or mult[j] == 0x01:
+                            count += 1
+                            pos = i
+                        else:
+                            count = 0
+                    except:
+                        count = 0
+            if count >= len(conditions):
+                try:
+                    values[iter] = pos
+                except:
+                    break
+                iter += 1
+            i += num
+        if iter > 0:
+            return values
+        else:
+            return values
+
 def ColouredText(input:str, Base:str = "White", New:str = "Yellow"):
     split = input.split('&')
     if split == input:
@@ -397,14 +456,14 @@ def ColouredText(input:str, Base:str = "White", New:str = "Yellow"):
 
 def main():
     app = QApplication(sys.argv)
-    try:
-        SelSave()
-        Options()
-    except Exception as e:
-        print("An error has occurred\nPlease report this in #bug-reports:")
-        print(e)
-        input("Press enter to restart")
-        main()
+
+    SelSave()
+    Options()
+
+    print("An error has occurred\nPlease report this in #bug-reports:")
+    print(e)
+    input("Press enter to restart")
+    main()
 
 if __name__ == "__main__":
     main()
