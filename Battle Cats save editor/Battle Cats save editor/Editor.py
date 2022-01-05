@@ -20,6 +20,12 @@ with open("Save Edits/Cats/Get Cat.py","r") as file:
 with open("Save Edits/Cats/Get Specific Cats.py","r") as file:
     exec(file.read(), globals(), l)
     SpecifiCat = l['SpecifiCat']
+with open("Save Edits/Cats/Remove Cats.py","r") as file:
+    exec(file.read(), globals(), l)
+    RemCats = l['RemCats']
+with open("Save Edits/Cats/Remove Specific Cats.py","r") as file:
+    exec(file.read(), globals(), l)
+    RemSpecifiCat = l['RemSpecifiCat']
 # Other Edits
 with open("Save Edits/Other/New Inquiry Code.py","r") as file:
     exec(file.read(), globals(), l)
