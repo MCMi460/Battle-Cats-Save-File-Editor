@@ -6,14 +6,21 @@ from datetime import datetime
 l = locals()
 # Game Mods
 
-# Save Edits
+# Basic Item Edits
 with open("Save Edits/Basic Items/CatFood.py","r") as file:
     exec(file.read(), globals(), l)
     catFood = l['catFood']
 with open("Save Edits/Basic Items/XP.py","r") as file:
     exec(file.read(), globals(), l)
     xp = l['xp']
-# Patch file
+# Cat Edits
+with open("Save Edits/Cats/Get Cat.py","r") as file:
+    exec(file.read(), globals(), l)
+    Cats = l['Cats']
+with open("Save Edits/Cats/Get Specific Cats.py","r") as file:
+    exec(file.read(), globals(), l)
+    SpecifiCat = l['SpecifiCat']
+# Other Edits
 with open("Save Edits/Other/New Inquiry Code.py","r") as file:
     exec(file.read(), globals(), l)
     NewIQ = l['NewIQ']
@@ -56,11 +63,10 @@ def SelSave():
     if dlg.exec_() == QDialog.Accepted:
         fileToOpen = dlg.selectedFiles()
         for i in range(len(fileToOpen)):
-            print(f"{Color['White']}Save: {Color['Green']}\"{os.path.basename(fileToOpen[i])}\"")
-        print(Color['White'],end='')
+            ColouredText(f"&Save: &\"{os.path.basename(fileToOpen[i])}\"&\n", "White", "Green")
         Savepaths = fileToOpen
     else:
-        print("Please select your save\n")
+        ColouredText("Please select your save\n");
         SelSave()
         return
     gameVer = input("What game version are you using? (e.g en, jp, kr), note: en currently has the most support with the editor, so features may not work in other versions\n")
@@ -158,12 +164,12 @@ def Options():
         "Select a new save", "Cat Food", "XP", "Tickets / Platinum Shards", "Leadership", "NP", "Treasures", "Battle Items", "Catseyes", "Cat Fruits / Seeds", "Talent Orbs", "Gamatoto", "Ototo", "Gacha Seed", "Equip Slots", "Gain / Remove Cats", "Cat / Stat Upgrades", "Cat Evolves", "Cat Talents",
         "Clear Levels / Outbreaks / Timed Score", "Inquiry Code / Elsewhere Fix / Unban", "Close the rank up bundle / offer menu", "Game Modding menu", "Calculate checksum of save file",
     ]
-    print(f"{Color['Red']}Warning: if you are using a non en save, many features won't work, or they might corrupt your save data, so make sure you back up your saves!")
+    ColouredText("Warning: if you are using a non en save, many features won't work, or they might corrupt your save data, so make sure you back up your saves!\n", "White", "Red");
 
-    toOutput = f"{Color['White']}What would you like to do?\n{Color['Yellow']}0. {Color['White']}Select a new save\n"
+    toOutput = "&What would you like to do?&\n0.& Select a new save\n&"
     for i in range(1,len(Features)):
-        toOutput = toOutput + f"{Color['White']}{i}. {Color['Yellow']}{Features[i]}" + "\n"
-    print(f"{toOutput}{Color['White']}")
+        toOutput = toOutput + f"&{i}.& {Features[i]}" + "\n"
+    ColouredText(toOutput)
 
     CatNumber = []
     CatNumber.append(GetCatNumber(path))
@@ -210,7 +216,7 @@ def Options():
         elif Choice == 14:
             pass
         elif Choice == 15:
-            pass
+            GetCats(path)
         elif Choice == 16:
             pass
         elif Choice == 17:
@@ -233,6 +239,34 @@ def Options():
     input("Press enter to continue\n")
     Options()
 
+def GetCats(path:str):
+    Features = [
+        "Go back",
+        "Get all cats",
+        "Get specific cats",
+        "Remove all cats",
+        "Remove specific cats",
+    ]
+
+    toOutput = "&What would you like to edit?&\n0.& Go back\n&"
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"&{i}.& {Features[i]}" + "\n"
+    ColouredText(toOutput)
+    choice = int(input())
+
+    if choice == 0:
+        Options()
+    elif choice == 1:
+        Cats(path)
+    elif choice == 2:
+        SpecifiCat(path)
+    elif choice == 3:
+        RemCats(path)
+    elif choice == 4:
+        RemSpecifiCat(path)
+    else:
+        print(f"Please enter a number between 0 and {len(Features)}")
+
 def OccurrenceB(path:str):
     stream = io.open(path, mode='rb')
 
@@ -250,13 +284,29 @@ def OccurrenceB(path:str):
 
     return occurrence
 
+def ColouredText(input:str, Base:str = "White", New:str = "Yellow"):
+    split = input.split('&')
+    if split == input:
+        print(Color['Red'],end='')
+        print("\nNo & characters in inputed string!")
+    print(Color[New],end='')
+    i = 0
+    while i < len(split):
+        print(Color[New],end='')
+        print(split[i],end='')
+        print(Color[Base],end='')
+        if i == len(split) - 1:
+            break
+        print(split[i + 1],end='')
+        i += 2
+    print(Color[Base])
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     try:
         SelSave()
         Options()
     except Exception as e:
-        print(Color['White'],end='')
         print("An error has occurred\nPlease report this in #bug-reports:")
         print(e)
         input("Press enter to exit")
