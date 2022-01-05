@@ -26,6 +26,12 @@ with open("Save Edits/Cats/Remove Cats.py","r") as file:
 with open("Save Edits/Cats/Remove Specific Cats.py","r") as file:
     exec(file.read(), globals(), l)
     RemSpecifiCat = l['RemSpecifiCat']
+# Gamatoto - Ototo Edits
+
+# Level Edits
+with open("Save Edits/Level/Main Story.py","r") as file:
+    exec(file.read(), globals(), l)
+    Stage = l['Stage']
 # Other Edits
 with open("Save Edits/Other/New Inquiry Code.py","r") as file:
     exec(file.read(), globals(), l)
@@ -230,9 +236,9 @@ def Options():
         elif Choice == 18:
             pass
         elif Choice == 19:
-            pass
+            Levels(path)
         elif Choice == 20:
-            NewIQ(path)
+            Inquiry(path)
         elif Choice == 21:
             pass
         elif Choice == 22:
@@ -244,6 +250,58 @@ def Options():
         patchSaveFile(gameVer, path)
     input("Press enter to continue\n")
     Options()
+
+def Inquiry(path:str):
+    Features = [
+        "Go back",
+        "Change Inquiry code",
+        "Fix save is used elsewhere error - whilst selecting a save that has the error(the one you select when you open the editor) select a new save that has never had the save is used elsewhere bug ever(you can re-install the game to get a save like that)",
+    ]
+    toOutput = "&What would you like to edit?&\n0.& Go back\n&";
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"&{i}.& {Features[i]}" + "\n"
+    ColouredText(toOutput)
+    choice = int(input())
+
+    if choice == 0:
+        Options()
+    elif choice == 1:
+        NewIQ(path)
+    elif choice == 2:
+        Elsewhere(path)
+    else:
+        print(f"Please enter a number between 0 and {len(Features)}")
+
+def Levels(path:str):
+    Features = [
+        "Go back",
+        "Clear Main Story Chapters",
+        "Clear Stories of Legend Subchapters",
+        "Clear Zombie Stages / Outbreaks",
+        "Clear Aku Realm",
+        "Set Into The Future Timed Scores",
+    ]
+
+    toOutput = "&What would you like to edit?&\n0.& Go back\n&"
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"&{i}.& {Features[i]}\n"
+    ColouredText(toOutput)
+    choice = int(input())
+
+    if choice == 0:
+        Options()
+    elif choice == 1:
+        Stage(path)
+    elif choice == 2:
+        SoL(path)
+    elif choice == 3:
+        Outbreaks(path)
+    elif choice == 4:
+        ClearAku(path)
+    elif choice == 5:
+        TimedScore(path)
+    else:
+        print(f"Please enter a number between 0 and {len(Features)}")
 
 def GetCats(path:str):
     Features = [
@@ -307,7 +365,7 @@ def ColouredText(input:str, Base:str = "White", New:str = "Yellow"):
         i += 2
     print(Color[Base])
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     try:
         SelSave()
@@ -315,5 +373,8 @@ if __name__ == "__main__":
     except Exception as e:
         print("An error has occurred\nPlease report this in #bug-reports:")
         print(e)
-        input("Press enter to exit")
-        quit()
+        input("Press enter to restart")
+        main()
+
+if __name__ == "__main__":
+    main()
