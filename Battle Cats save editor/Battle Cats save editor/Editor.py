@@ -14,6 +14,9 @@ with open("Save Edits/Basic Items/XP.py","r") as file:
     exec(file.read(), globals(), l)
     xp = l['xp']
 # Cat Edits
+with open("Save Edits/Cats/Cat Upgrade.py","r") as file:
+    exec(file.read(), globals(), l)
+    CatUpgrades = l['CatUpgrades']
 with open("Save Edits/Cats/Get Cat.py","r") as file:
     exec(file.read(), globals(), l)
     Cats = l['Cats']
@@ -32,7 +35,13 @@ with open("Save Edits/Cats/Remove Specific Cats.py","r") as file:
 with open("Save Edits/Level/Main Story.py","r") as file:
     exec(file.read(), globals(), l)
     Stage = l['Stage']
+with open("Save Edits/Level/Stories of Legend.py","r") as file:
+    exec(file.read(), globals(), l)
+    SoL = l['SoL']
 # Other Edits
+with open("Save Edits/Other/Close Bundle.py","r") as file:
+    exec(file.read(), globals(), l)
+    Bundle = l['Bundle']
 with open("Save Edits/Other/New Inquiry Code.py","r") as file:
     exec(file.read(), globals(), l)
     NewIQ = l['NewIQ']
@@ -96,52 +105,44 @@ def GetCatNumber(path:str):
     # If the save file is not a save file, don't modify/read it as one
     if path.endswith(".list") or path.endswith(".pack") or path.endswith(".so") or path.endswith(".csv"):
         raise Exception("Not a save file")
-    stream = io.open(path, mode='rb')
+    with io.open(path, mode='r+b') as stream:
 
-    allData = stream.read()
-    anchour = 0
+        allData = stream.read()
+        anchour = (0).to_bytes(1, "little")
 
-    for i in range(7344,7375):
-        try:
-            if allData[i] == 2:
-                anchour = allData[i - 1]
-                break
-        except:
-            raise Exception("Error, this save file seems to be different/corrupted, if this is an actual bc save file, please report this to the discord")
-    if anchour == 0:
-        for i in range(7375,10800):
+        for i in range(7344,7375):
             try:
                 if allData[i] == 2:
                     anchour = allData[i - 1]
                     break
             except:
                 raise Exception("Error, this save file seems to be different/corrupted, if this is an actual bc save file, please report this to the discord")
-    stream.close()
-    return anchour
+        if anchour == 0:
+            for i in range(7375,10800):
+                try:
+                    if allData[i] == 2:
+                        anchour = allData[i - 1]
+                        break
+                except:
+                    raise Exception("Error, this save file seems to be different/corrupted, if this is an actual bc save file, please report this to the discord")
+        return anchour
 
 def UpgradeCats(path:str, catIDs:list, plusLevels:list, baseLevels:list, ignore:int = 0):
     if not all(isinstance(x, int) for x in catIDs) or not all(isinstance(x, int) for x in plusLevels) or not all(isinstance(x, int) for x in baseLevels):
         raise Exception('Expected integer list')
     occurrence = OccurrenceB(path)
-    stream = io.open(path, mode='rb')
+    with io.open(path, mode='r+b') as stream:
 
-    x_bytes = stream.read()
-    Position = 0
-    pos = occurrence[1] + 1
+        pos = occurrence[1] + 1
 
-    for i in range(len(catIDs)):
-        Position = pos + (catIDs[i] * 4) + 3
-        if ignore != 2:
-            x_bytes[Position] = bytes(plusLevels[i])
-            Position -= 1
-        Position += 2
-        if ignore != 1:
-            x_bytes[Position] = bytes(baseLevels[i])
-
-    stream.close()
-    stream = io.open(path, mode='wb')
-    stream.write(x_bytes)
-    stream.close()
+        for i in range(len(catIDs)):
+            stream.seek(pos + (catIDs[i] * 4) + 3)
+            if ignore != 2:
+                stream.write((plusLevels[i]).to_bytes(1, "little"))
+                stream.seek(-1,1)
+            stream.seek(2,1)
+            if ignore != 1:
+                stream.write((baseLevels[i]).to_bytes(1, "little"))
 
 def LoadData(path:str):
     stream = io.open(path, mode='rb')
@@ -167,6 +168,7 @@ def GetCurrentCats(path:str):
     return catsL
 
 def Options():
+    global catAmount
     fileToOpen = Savepaths
     path = fileToOpen[0]
     print(f"{Color['Red']}Backup your save before using this editor!\nIf you get an error along the lines of \"Your save is active somewhere else\"then select option 20-->2, and select a save that doesn't have that error and never has had the error\n")
@@ -230,7 +232,7 @@ def Options():
         elif Choice == 15:
             GetCats(path)
         elif Choice == 16:
-            pass
+            Upgrades(path)
         elif Choice == 17:
             pass
         elif Choice == 18:
@@ -300,6 +302,34 @@ def Levels(path:str):
         ClearAku(path)
     elif choice == 5:
         TimedScore(path)
+    else:
+        print(f"Please enter a number between 0 and {len(Features)}")
+
+def Upgrades(path:str):
+    Features = [
+        "Go back",
+        "Upgrade all cats",
+        "Upgrade all cats that are currently unlocked",
+        "Upgrade specific cats",
+        "Upgrade Base / Special Skills (The ones that are blue)",
+    ]
+
+    toOutput = "&What would you like to edit?&\n0.& Go back\n&"
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"&{i}.& {Features[i]}\n"
+    ColouredText(toOutput)
+    choice = int(input())
+
+    if choice == 0:
+        Options()
+    elif choice == 1:
+        CatUpgrades(path)
+    elif choice == 2:
+        UpgradeCurrentCats(path)
+    elif choice == 3:
+        SpecifUpgrade(path)
+    elif choice == 4:
+        Blue(path)
     else:
         print(f"Please enter a number between 0 and {len(Features)}")
 
