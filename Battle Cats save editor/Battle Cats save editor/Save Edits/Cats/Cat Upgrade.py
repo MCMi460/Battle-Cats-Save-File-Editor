@@ -15,9 +15,8 @@ def CatUpgrades(path:str):
     except:
         leave = 2
     ids = list(range(0,catAmount + 1))
-    plusLevels = list(range(plusLevel,catAmount + 1))
-    baseLevels = list(range(baselevel,catAmount + 1))
-    print(path, ids, plusLevels, baseLevels, leave)
+    plusLevels = [ plusLevel for x in range(catAmount + 1) ]
+    baseLevels = [ baselevel for x in range(catAmount + 1) ]
     UpgradeCats(path, ids, plusLevels, baseLevels, leave)
 
     print(f"Upgraded all cats to level {answer}")

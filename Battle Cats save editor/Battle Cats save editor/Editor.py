@@ -456,14 +456,14 @@ def ColouredText(input:str, Base:str = "White", New:str = "Yellow"):
 
 def main():
     app = QApplication(sys.argv)
-
-    SelSave()
-    Options()
-
-    print("An error has occurred\nPlease report this in #bug-reports:")
-    print(e)
-    input("Press enter to restart")
-    main()
+    try:
+        SelSave()
+        Options()
+    except Exception as e:
+        print("An error has occurred\nPlease report this in #bug-reports:")
+        print(e)
+        input("Press enter to restart")
+        main()
 
 if __name__ == "__main__":
     main()
