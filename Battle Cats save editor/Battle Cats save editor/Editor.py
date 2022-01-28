@@ -38,6 +38,9 @@ with open("Save Edits/Level/Main Story.py","r") as file:
 with open("Save Edits/Level/Stories of Legend.py","r") as file:
     exec(file.read(), globals(), l)
     SoL = l['SoL']
+with open("Save Edits/Level/Zombie Stages.py","r") as file:
+    exec(file.read(), globals(), l)
+    Outbreaks = l['Outbreaks']
 # Other Edits
 with open("Save Edits/Other/Close Bundle.py","r") as file:
     exec(file.read(), globals(), l)
@@ -103,6 +106,17 @@ def MakeRequest(url):
 
 def Error(text:str = "Error, a position couldn't be found, please report this in #bug-reports on discord"):
     raise Exception(text)
+
+def ThirtySix(path:str):
+    conditions = bytearray([ 0xFF, 0xFF, 0x00, 0x36, 0x00, 0x00 ])
+    choice = bytearray([ 0x00, 0x00, 0x01, 0x00, 0x00, 0x00 ])
+    pos1 = Search(path, conditions, False, 0, choice)[0]
+    conditions2 = bytearray([ 0x36, 0x00, 0x00, 0x00 ])
+    pos2 = Search(path, conditions2, False, pos1+len(conditions))[0]
+
+    if pos1 == 0 or pos2 == 0:
+        Error()
+    return [pos1, pos2]
 
 def GetCatNumber(path:str):
     # If the save file is not a save file, don't modify/read it as one
