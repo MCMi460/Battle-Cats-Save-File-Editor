@@ -32,6 +32,12 @@ with open("Save Edits/Cats/Remove Specific Cats.py","r") as file:
 # Gamatoto - Ototo Edits
 
 # Level Edits
+with open("Save Edits/Level/All Treasures.py","r") as file:
+    exec(file.read(), globals(), l)
+    MaxTreasures = l['MaxTreasures']
+with open("Save Edits/Level/SpecificTreasures.py","r") as file:
+    exec(file.read(), globals(), l)
+    VerySpecificTreasures = l['VerySpecificTreasures']
 with open("Save Edits/Level/Main Story.py","r") as file:
     exec(file.read(), globals(), l)
     Stage = l['Stage']
@@ -229,7 +235,7 @@ def Options():
         elif Choice == 5:
             pass
         elif Choice == 6:
-            pass
+            Treasures(path)
         elif Choice == 7:
             pass
         elif Choice == 8:
@@ -375,6 +381,28 @@ def GetCats(path:str):
         RemCats(path)
     elif choice == 4:
         RemSpecifiCat(path)
+    else:
+        print(f"Please enter a number between 0 and {len(Features)}")
+
+def Treasures(path:str):
+    Features = [
+        "Go back",
+        "All Treasures In A Chapter / Chapters",
+        "Specific Treasure Types e.g Energy Drink, Void Fruit",
+    ]
+
+    toOutput = "&What would you like to edit?&\n0.& Go back\n&"
+    for i in range(1,len(Features)):
+        toOutput = toOutput + f"&{i}.& {Features[i]}" + "\n"
+    ColouredText(toOutput)
+    choice = int(input())
+
+    if choice == 0:
+        Options()
+    elif choice == 1:
+        MaxTreasures(path)
+    elif choice == 2:
+        VerySpecificTreasures(path)
     else:
         print(f"Please enter a number between 0 and {len(Features)}")
 
